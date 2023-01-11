@@ -48,7 +48,7 @@
    [:a {:href (format  "https://vega.github.io/editor/#/examples/vega-lite/%s" (:name collected-info))}
     "View this example in the online editor"]
    [:h5 "edn"]
-   [:div [:pre (:edn-spec collected-info)]]])
+   [:div [:pre [:code  (:edn-spec collected-info)]]]])
 
 (defn example-link [vl-info link]
   [:a {:href ""
@@ -94,8 +94,12 @@
   (page
    [:head
     [:meta {:charset "UTF-8"}]
-    [:title "Htmx + Kit"]
-    [:script {:src "https://unpkg.com/htmx.org@1.8.4/dist/htmx.min.js" :defer true}]]
+    [:title "Vega Lite example gallery in EDN format"]
+    [:script {:src "https://unpkg.com/htmx.org@1.8.4/dist/htmx.min.js" :defer true}]
+    [:link {:rel "stylesheet" :href "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/styles/default.min.css"}]
+    [:script  {  :src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/highlight.min.js"}]
+    [:script {:src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/languages/clojure.min.js"}]]
+
     ;; [:script {:src "https://unpkg.com/hyperscript.org@0.9.5" :defer true}]
 
    [:body {:hx-push-url "/index"}
@@ -105,11 +109,12 @@
 
 (defn example-clicked [request]
   (ui
+
    (->> vl-infos
         (filter #(= (:name %)
                     (-> request :params :name)))
-     first
-     collect-info info->hiccup)))
+        first
+        collect-info info->hiccup)))
 
 
 
