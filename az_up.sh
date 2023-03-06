@@ -1,1 +1,1 @@
-az containerapp up -n vegalitegalleryedn -g vegalitegalleryedn --registry-server ghcr.io --registry-username behrica --registry-password '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' --image ghcr.io/behrica/vl-gallery-edn:main --ingress external --target-port 3000 
+az containerapp up -n vegalitegalleryedn -g vegalitegalleryedn --registry-server ghcr.io --registry-username behrica --registry-password '<ghp_xxxx>' --image ghcr.io/behrica/vl-gallery-edn:main --ingress external --target-port 3000 --subscription f4a8c320-6fcb-4d91-ab28-871e32fb90c3
