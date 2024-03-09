@@ -11,7 +11,7 @@ Start the server with:
 (go)
 ```
 
-The default API is available under http://localhost:3000/api
+The web app is available under http://localhost:3000
 
 System configuration is available under `resources/system.edn`.
 
