@@ -1,0 +1,43 @@
+name: Trigger auto deployment for vlgalleryedn
+
+# When this action will be executed
+on:
+  # Automatically trigger it when detected changes in repo
+  push:
+    branches: 
+      [ main ]
+    paths:
+    - '**'
+    - '.github/workflows/vlgalleryedn-AutoDeployTrigger-40fb820f-e6d6-45b7-a9c1-a7caa84424f1.yml'
+
+  # Allow manual trigger 
+  workflow_dispatch:
+      
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout to the branch
+        uses: actions/checkout@v2
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.VLGALLERYEDN_AZURE_CREDENTIALS }}
+
+      - name: Build and push container image to registry
+        uses: azure/container-apps-deploy-action@v2
+        with:
+          appSourcePath: ${{ github.workspace }} 
+          registryUrl: sdfsfsfwftwega.azurecr.io
+          registryUsername: ${{ secrets.VLGALLERYEDN_REGISTRY_USERNAME }}
+          registryPassword: ${{ secrets.VLGALLERYEDN_REGISTRY_PASSWORD }}
+          containerAppName: vlgalleryedn
+          resourceGroup: vegalitegalleryedn
+          imageToBuild: sdfsfsfwftwega.azurecr.io/vlgalleryedn:${{ github.sha }}
+          
+            
+
+     
+
