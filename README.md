@@ -1,5 +1,8 @@
 # vl-gallery-edn
 
+Live app: https://vlgalleryedn.happytree-bf95e0f8.westeurope.azurecontainerapps.io/
+
+# Development
 Start a [REPL](#repls) in your editor or terminal of choice.
 
 Start the server with:
@@ -8,7 +11,7 @@ Start the server with:
 (go)
 ```
 
-The default API is available under http://localhost:3000/api
+The web app is available under http://localhost:3000
 
 System configuration is available under `resources/system.edn`.
 
