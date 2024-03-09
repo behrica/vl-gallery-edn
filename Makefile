@@ -7,6 +7,9 @@ run:
 repl:
 	clj -M:dev:nrepl
 
+cider: 
+	clj -M:dev:cider
+
 test:
 	clj -M:test
 
