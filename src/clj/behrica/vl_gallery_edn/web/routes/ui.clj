@@ -1,12 +1,11 @@
 (ns behrica.vl-gallery-edn.web.routes.ui
   (:require
+   [behrica.vl-gallery-edn.web.htmx :as htmx :refer [page ui]]
    [behrica.vl-gallery-edn.web.middleware.exception :as exception]
    [behrica.vl-gallery-edn.web.middleware.formats :as formats]
-   [behrica.vl-gallery-edn.web.routes.utils :as utils]
-   [behrica.vl-gallery-edn.web.htmx :refer [ui page] :as htmx]
-   [integrant.core :as ig]
    [cheshire.core :as json]
    [clojure.java.io :as io]
+   [integrant.core :as ig]
    [puget.printer :as puget]
    [reitit.ring.middleware.muuntaja :as muuntaja]
    [reitit.ring.middleware.parameters :as parameters]))
@@ -14,6 +13,7 @@
 (def vl-examples (-> (io/resource  "examples.json")
                      io/reader
                      (json/parse-stream keyword)))
+
 
 (def vl-infos
   (->> (for  [[k-1 v-1] vl-examples [k-2 v-2] v-1]
@@ -44,7 +44,7 @@
    [:a {:id (format "%s" (:name collected-info))}]
    [:h3  (:title collected-info)]
    [:p (:description collected-info)]
-   [:img {:src  (:img-file-url collected-info)}]
+   [:img {:src  (:img-file-url collected-info) :width "500px" :height "500px"}]
    [:a {:href (format  "https://vega.github.io/editor/#/examples/vega-lite/%s" (:name collected-info))}
     "View this example in the online editor"]
    [:h5 "edn"]
@@ -52,11 +52,11 @@
 
 (defn example-link [vl-info link]
   [:a {:href ""
-        :hx-push-url (str "/" (:name vl-info))
-        :hx-get "/example-clicked"
-        :hx-target "#content"
-        :hx-swap "outerHTML"
-        :hx-vals (json/generate-string  {:name (:name vl-info)})}
+       :hx-push-url (str "/" (:name vl-info))
+       :hx-get "/example-clicked"
+       :hx-target "#content"
+       :hx-swap "outerHTML"
+       :hx-vals (json/generate-string  {:name (:name vl-info)})}
    link])
 
 (defn make-td [vl-info]
@@ -68,8 +68,8 @@
                   :overflow-y "hidden"}}
 
     (example-link vl-info [:img {:src (:img-file-url vl-info)
-                                 :width "100px"
-                                 :height "100px"}])]])
+                                 :width "300px"
+                                 :height "300px"}])]])
 
 (defn example-overview []
   (apply vector :table {:id "content"
