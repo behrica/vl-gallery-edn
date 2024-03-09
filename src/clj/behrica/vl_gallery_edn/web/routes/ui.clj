@@ -11,7 +11,7 @@
    [reitit.ring.middleware.muuntaja :as muuntaja]
    [reitit.ring.middleware.parameters :as parameters]))
 
-(def vl-examples (-> (io/as-url  "https://raw.githubusercontent.com/vega/vega-lite/next/site/_data/examples.json")
+(def vl-examples (-> (io/resource  "examples.json")
                      io/reader
                      (json/parse-stream keyword)))
 
