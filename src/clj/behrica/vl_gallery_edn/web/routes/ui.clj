@@ -26,12 +26,13 @@
        (flatten)))
 
 (defn collect-info [vl-info]
+
   (let [
         vl-spec (slurp (io/resource (format  "vl-specs/%s.vl.json" (:name vl-info))))
         edn-spec (puget/pprint-str
                   (json/parse-string vl-spec keyword)
                   {:map-delimiter ""})
-        img-file-url (format  "examples/%s.svg" (:name vl-info))]
+        img-file-url (format  "/examples/%s.svg" (:name vl-info))]
     (assoc vl-info
            :img-file-url img-file-url
            :vl-spec vl-spec
@@ -83,12 +84,10 @@ document.getElementById('copy-code-btn').textContent='copied';
 
 (defn example-link [vl-info link]
   [:a {:href ""
-       :hx-push-url (str "/" (:name vl-info))
-       :hx-get "/example-clicked"
+       :hx-push-url (str "/example/" (:name vl-info))
+       :hx-get (str "/example-snipp/" (:name vl-info))
        :hx-target "#content"
-       :hx-swap "outerHTML"
-       :hx-vals (json/generate-string  {:name (:name vl-info)})}
-            
+       :hx-swap "outerHTML"}
    link])
 
 (defn make-td [vl-info]
@@ -120,9 +119,7 @@ document.getElementById('copy-code-btn').textContent='copied';
                (map collect-info)
                (partition-all 5)))))
 
-
-
-(defn home [request]
+(defn base-page [request content]
   (page
    [:head
     [:meta {:charset "UTF-8"}]
@@ -132,32 +129,50 @@ document.getElementById('copy-code-btn').textContent='copied';
     [:link {:rel "stylesheet" :href "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/styles/default.min.css"}]]
 
 
-   [:body {:hx-push-url "/index"}
+   [:body
     [:script  {:src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/highlight.min.js"}]
     [:script {:src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/languages/clojure.min.js"}]
 
 
+
     [:h1
      "Vega Lite example gallery in EDN format"]
-    (example-overview)]))
+    content]))
 
 
-(defn example-clicked [request]
-  (ui
 
-   (->> vl-infos
+
+(defn home [request]
+  (base-page
+   request
+   (example-overview)))
+
+
+(defn example [request]
+  (->> vl-infos
         (filter #(= (:name %)
-                    (-> request :params :name)))
+                    (-> request :path-params :example-id)))
         first
-        collect-info info->hiccup)))
+        collect-info info->hiccup))
 
+
+(defn example-snipp [request]
+  (ui (example request)))
+
+   
+
+
+(defn example-page [request]
+  (base-page
+   request
+   (example request)))
 
 
 ;; Routes
 (defn ui-routes [_opts]
   [["/" {:get home}]
-   ["/index" {:get home}]
-   ["/example-clicked" {:get example-clicked}]])
+   ["/example-snipp/:example-id" {:get example-snipp}]
+   ["/example/:example-id" {:get example-page}]])
 
 
 
