@@ -31,7 +31,7 @@
         edn-spec (puget/pprint-str
                   (json/parse-string vl-spec keyword)
                   {:map-delimiter ""})
-        img-file-url (format  "https://github.com/vega/vega-lite/raw/next/examples/compiled/%s.svg" (:name vl-info))]
+        img-file-url (format  "examples/%s.svg" (:name vl-info))]
     (assoc vl-info
            :img-file-url img-file-url
            :vl-spec vl-spec
@@ -41,14 +41,17 @@
 
 (defn info->hiccup [collected-info]
 
-  [:div
+  [:span
 
    [:a {:id (format "%s" (:name collected-info))}]
    [:h3  (:title collected-info)]
    [:p (:description collected-info)]
-   [:img {:src  (:img-file-url collected-info) :width "500px" :height "500px"}]
-   [:a {:href (format  "https://vega.github.io/editor/#/examples/vega-lite/%s" (:name collected-info))}
-    "View this example in the online editor"]
+   [:p
+    [:img {:src  (:img-file-url collected-info) :width "700px" :height "700px"}]]
+   [:p
+
+    [:a {:href (format  "https://vega.github.io/editor/#/examples/vega-lite/%s" (:name collected-info))}
+     "View this example in the online editor"]]
    [:h5 "EDN"]
    [:script "
 
