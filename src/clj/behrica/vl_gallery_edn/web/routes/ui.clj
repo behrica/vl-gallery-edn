@@ -40,15 +40,43 @@
 
 
 (defn info->hiccup [collected-info]
+
   [:div
+
    [:a {:id (format "%s" (:name collected-info))}]
    [:h3  (:title collected-info)]
    [:p (:description collected-info)]
    [:img {:src  (:img-file-url collected-info) :width "500px" :height "500px"}]
    [:a {:href (format  "https://vega.github.io/editor/#/examples/vega-lite/%s" (:name collected-info))}
     "View this example in the online editor"]
-   [:h5 "edn"]
-   [:div [:pre [:code  (:edn-spec collected-info)]]]])
+   [:h5 "EDN"]
+   [:script "
+
+function CopyToClipboard()
+{
+var r = document.createRange();
+r.selectNode(document.getElementById('code'));
+window.getSelection().removeAllRanges();
+window.getSelection().addRange(r);
+document.execCommand('copy');
+window.getSelection().removeAllRanges();
+document.getElementById('copy-code-btn').textContent='copied';
+}
+
+"]
+
+   [:div [:pre [:code
+                {:id "code"
+                 :class "language-json"}
+                (:edn-spec collected-info)]]]
+
+   [:script "hljs.highlightAll();"]
+   [:button
+    {:id "copy-code-btn"
+     :onclick "CopyToClipboard();return false;"}
+    "copy EDN to clipboard"]])
+
+   
 
 (defn example-link [vl-info link]
   [:a {:href ""
@@ -57,6 +85,7 @@
        :hx-target "#content"
        :hx-swap "outerHTML"
        :hx-vals (json/generate-string  {:name (:name vl-info)})}
+            
    link])
 
 (defn make-td [vl-info]
@@ -95,15 +124,18 @@
    [:head
     [:meta {:charset "UTF-8"}]
     [:title "Vega Lite example gallery in EDN format"]
-    [:script {:src "https://unpkg.com/htmx.org@1.8.4/dist/htmx.min.js" :defer true}]
-    [:link {:rel "stylesheet" :href "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/styles/default.min.css"}]
-    [:script  {  :src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/highlight.min.js"}]
-    [:script {:src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/languages/clojure.min.js"}]]
+    [:script {:src "https://unpkg.com/htmx.org@1.9.10/dist/htmx.min.js" :defer true}]
 
-    ;; [:script {:src "https://unpkg.com/hyperscript.org@0.9.5" :defer true}]
+    [:link {:rel "stylesheet" :href "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/styles/default.min.css"}]]
+
 
    [:body {:hx-push-url "/index"}
-    [:h1 "Vega Lite example gallery in EDN format"]
+    [:script  {:src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/highlight.min.js"}]
+    [:script {:src "https://unpkg.com/@highlightjs/cdn-assets@11.7.0/languages/clojure.min.js"}]
+
+
+    [:h1
+     "Vega Lite example gallery in EDN format"]
     (example-overview)]))
 
 
